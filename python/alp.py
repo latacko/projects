@@ -1,4 +1,7 @@
 znaki = ["a","b","c","d","e","f","g","h","i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "w", "y", "z"]
+        # 0   1   2   3   4   5   6   7   8   9   10  1   2   3   4   5   6   7   8   9   20  1   2
+        # 3   4   5   6   7   8   9   30  1   2   3   4   5   6   7   8   9   40  1   2   3   4   5
+        # 6   7   8   9   50  1   2   3   4   5   6   7   8   9   60  1   2   3   4   5   6   7   8
 pop = []
 
 def same(stre):
@@ -29,7 +32,7 @@ def up(stre, index):
         stre = stre[:index] + new_char + stre[index+1:]
     return stre
 
-dlugosc = 528000
+dlugosc = 25
 for i in range(dlugosc):
     lastchars = None
     if (len(pop) == 0):
