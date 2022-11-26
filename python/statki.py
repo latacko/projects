@@ -1,32 +1,91 @@
 from random import randrange
 import time
-import pygame, sys
+import pygame, sys, subprocess
+from threading import Thread
 
+withBot = True
 size = width, height = 500, 340
+if withBot:
+    size = width, height = 828, 358
 
 screen = pygame.display.set_mode(size)
-bg = []
-for i in range(25):
-    nr = i
-    if i  < 10:
-        nr = "0"+str(i)
-    bg.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\bgframes\\frame_{nr}_delay-0.1s.gif"))
+pygame.display.set_caption('Statki')
 
-tlorect = bg[0].get_rect()
+w, h=5, 5
+
+myp = []
+for i in range(w*h):
+    myp.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\square.png").convert())
+
 
 def bganimate():
-    for img in bg:
-        time.sleep(0.1)
-        screen.blit(img, tlorect)
+    bg = []
+    if not withBot:
+        for i in range(25):
+            nr = i
+            if i  < 10:
+                nr = "0"+str(i)
+            bg.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
+    else:
+        for i in range(4):
+            bg.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
+    tlorect = bg[0].get_rect()
+    while True:
+        for i in range(len(bg)):
+            for img2 in bg:
+                if bg[i] != img2:
+                    screen.blit(img2, [-1000, -1000])
+            if not withBot:
+                time.sleep(0.1)
+            else:
+                time.sleep(0.2)
+            screen.blit(bg[i], tlorect)
+        for i in range(len(bg)-1, 1, -1):
+            for img2 in bg:
+                if bg[i] != img2:
+                    screen.blit(img2, [-1000, -1000])
+            if not withBot:
+                time.sleep(0.1)
+            else:
+                time.sleep(0.2)
+            screen.blit(bg[i], tlorect)
+t2 = Thread(target = bganimate)
+t2.start()
+
+def insquare(pos):
+    id = -1
+    for x in range(w):
+        for y in range(h):
+            id = id+1
+            min_x, min_y =50*x,50*y
+            max_x, max_y =50*x+50,50*y+50
+            if pos[0] > min_x and pos[0] < max_x and pos[1] > min_y and pos[1] < max_y:
+                return i
+    return False
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Set the x, y postions of the mouse click
+            x, y = event.pos
+            print(insquare(event.pos))
+            # for sq in myp:
 
-    
-    bganimate()
+            #     print("Sorawdzan img na pozyci " + str(myp.index(sq)) + " collide ?"  + str(sq.get_rect().collidepoint(event.pos)))
+            #     if sq.get_rect().collidepoint(event.pos):
+            #         print("Clicked " + str(myp.index(sq)))
+            #         break
+
+
+    id = -1
+    for x in range(w):
+        for y in range(h):
+            id = id+1
+            screen.blit(myp[i], [50*x,50*y])
 
     pygame.display.flip()
+    pygame.display.update()
 
 
 

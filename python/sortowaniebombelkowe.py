@@ -6,9 +6,7 @@ while something_change:
     for i in range(len(l)-1):
         steps += 1
         if l[i+1] < l[i]:
-            old = l[i+1]
-            l[i+1] = l[i]
-            l[i] = old
+            l[i+1], l[i] = l[i], l[i+1]
             print("Krok " + str(steps) + " " + str(l))
             test = True
         else:
