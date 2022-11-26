@@ -3,11 +3,12 @@ import time
 
 
 statki = []
-lethers = ["a", "b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","w","y","z"]
+letters = "abcdefghijklmnoprstuwyz"
+znaki_na_wysokosc = []
 ilosczyc = 5
 iloscstatkow = 5
-width =5
-height = 24
+width =15
+height = 5
 ilosczniszczonychstatkow = 0
 
 with_bot = True
@@ -15,21 +16,22 @@ with_bot = True
 def ciongznakow(ciong, dlugosc):
     list2 = [*ciong]
     wys = len(list2)
-    for zna in list2:
-        for leather in ciong:
-            wys += 1
-            znak = zna +leather
-            list2.append(znak)
-            if wys >= dlugosc:
-                return list2
-
-
-znaki_na_wysokosc = []
+    if (dlugosc > len(list2)):
+        for zna in list2:
+            for leather in ciong:
+                wys += 1
+                znak = zna +leather
+                list2.append(znak)
+                if wys >= dlugosc:
+                    return list2
+    else:
+        del list2[dlugosc:]
+        return list2
 
 def sprawdzanie_poprawnosci_pola(pole):
     miejscepierwszejliterki = -1
     pole = pole.lower()
-    for literka in lethers:
+    for literka in [*letters]:
         miejsce = pole.find(literka)
         if miejscepierwszejliterki==-1:
             miejscepierwszejliterki = miejsce
@@ -70,20 +72,20 @@ def create_ship_user(table):
         if sprawdzanie_poprawnosci_pola(podanepole) == False:
             continue
         num, let = sprawdzanie_poprawnosci_pola(podanepole)
-        nr = 0
-        e = False
-        if not let in lethers:
-            for x in let:
-                if x in lethers:
-                    nr += lethers.index(x)
-                else:
-                    e=True
-        else:
-            nr = lethers.index(let)
-        if e:
-            print("Poza planszą")
-            continue
-        po = "x"+num+"y"+str(nr)
+        # nr = 0
+        # e = False
+        # if not let in [*letters]:
+        #     for x in let:
+        #         if x in lethers:
+        #             nr += lethers.index(x)
+        #         else:
+        #             e=True
+        # else:
+        #     nr = lethers.index(let)
+        # if e:
+        #     print("Poza planszą")
+        #     continue
+        po = "x"+num+"y"+str(znaki_na_wysokosc.index(let))
         if not po in table:
             print("Ship created on " +  str(num) + let)
             succes = 1
@@ -106,17 +108,19 @@ def ishereshoot(pos, table):
 def create_table(bot_table, user_table):
     on_height = -1
     tab = ""
+    najdluse = len(znaki_na_wysokosc[len(znaki_na_wysokosc)-1])-1
     while on_height<=height:
         line = ""
+        dlugoscspacjiplanszy = len(" "*najdluse+ "    "*width)
         if on_height == -1:
-            iloscspacji = " " * (width+1)
-            line = iloscspacji+ "Plansza bota"+iloscspacji
+            odlewa = (dlugoscspacjiplanszy-len("Plansza bota"))//2
+            line = " "*odlewa + "Plansza bota"+" "*(dlugoscspacjiplanszy-(odlewa+len("Plansza bota"))+4)
         elif on_height == 0:
-            line = "   |"
+            line = " "*najdluse+"   |"
             for x in range(width):
                 line += " "+str(x+1)+" |"
         else:
-            line += znaki_na_wysokosc[on_height-1] + "  |"
+            line += znaki_na_wysokosc[on_height-1] + " "*(najdluse-(len(znaki_na_wysokosc[on_height-1])-1)) + "  |"
             for x in range(width):
                 isshot = ishereshoot("x" + str(x+1) + "y" + str(on_height-1), bot_table)
                 if isshot == 1:
@@ -130,14 +134,14 @@ def create_table(bot_table, user_table):
 
         if with_bot:
             if on_height == -1:
-                iloscspacji = " " * (width+1)
-                line += iloscspacji+ "Twoja plansza"+iloscspacji
+                odlewa = (dlugoscspacjiplanszy-len("Twoja plansza"))//2
+                line += " "+" "*odlewa + "Twoja plansza"+" "*(dlugoscspacjiplanszy-(odlewa+len("Twoja plansza")+4))
             elif on_height == 0:
-                line += "   |"
+                line += " "*najdluse+"   |"
                 for x in range(width):
                     line += " "+str(x+1)+" |"
             else:
-                line += znaki_na_wysokosc[on_height-1] + "  |"
+                line += znaki_na_wysokosc[on_height-1] + " "*(najdluse-(len(znaki_na_wysokosc[on_height-1])-1)) + "  |"
                 for x in range(width):
                     isshot = ishereshoot("x" + str(x+1) + "y" + str(on_height-1), user_table)
                     if isshot == 1:
@@ -148,14 +152,15 @@ def create_table(bot_table, user_table):
                         line += "   |"
 
         line += "\n"
-        for x in range(width+1):
+        line += "-"*najdluse + "---|"
+        for x in range(width):
             line += "---|"
         if with_bot:
             line += "\t\t\t"
-            for x in range(width+1):
+            line += "-"*najdluse + "---|"
+            for x in range(width):
                 line += "---|"
         tab += line+"\n"
-
         on_height += 1
     print(tab)
 
@@ -169,7 +174,8 @@ def Start():
     my_hits = []
     bot_hits = []
     mojestatki = []
-    znaki_na_wysokosc = ciongznakow("abcdefghijklmnoprstuwyz", height)[:]
+    global znaki_na_wysokosc
+    znaki_na_wysokosc = ciongznakow("abcdefghijklmnoprstuwyz", height)
     while len(znaki_na_wysokosc) == 0:
         for i in range(1, 4):
             print("Loading" + "."*i)
@@ -178,14 +184,15 @@ def Start():
             print("Loading" + "."*i)
             time.sleep(2)
 
+    print("ustawiono " + str(znaki_na_wysokosc))
     if with_bot:
         for x in range(iloscstatkow):
             print("Podaj miejsce statku np 4D (opcja wyboru od 1 do " + str(width) + " oraz od a do " +znaki_na_wysokosc[height-1]+")")
             create_ship_user(mojestatki)
         print(mojestatki)
-    if height> len(lethers):
-        print("height is up an max")
-        return
+    # if height> len(lethers):
+    #     print("height is up an max")
+    #     return
     for x in range(iloscstatkow):
         create_ship()
     
@@ -200,19 +207,19 @@ def Start():
                 continue
             num, let = sprawdzanie_poprawnosci_pola(podanepole)
 
-            e=False
-            if not let in lethers:
-                for x in let:
-                    if x in lethers:
-                        nr += lethers.index(x)
-                    else:
-                        e=True
-            else:
-                nr = lethers.index(let)
-            if e:
-                print("Poza planszą")
-                continue
-            po = "x"+num+"y"+str(nr)
+            # e=False
+            # if not let in lethers:
+            #     for x in let:
+            #         if x in lethers:
+            #             nr += lethers.index(x)
+            #         else:
+            #             e=True
+            # else:
+            #     nr = lethers.index(let)
+            # if e:
+            #     print("Poza planszą")
+            #     continue
+            po = "x"+num+"y"+str(znaki_na_wysokosc.index(let))
             if ishereshoot(po, my_hits) != 2:
                 print("Był już strzał w to pole")
                 continue
@@ -259,7 +266,7 @@ def Start():
             trafione = None
             while True:
                 bot_shoot_x = randrange(1, width+1)
-                bot_shoot_y = randrange(0, height-1)
+                bot_shoot_y = randrange(0, height)
 
                 bot_shoot = "x" + str(bot_shoot_x) + "y"+str(bot_shoot_y)
                 customtable = {}
