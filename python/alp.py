@@ -32,6 +32,8 @@ def up(stre, index):
         stre = stre[:index] + new_char + stre[index+1:]
     return stre
 
+
+
 dlugosc = 25
 for i in range(dlugosc):
     lastchars = None
