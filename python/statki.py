@@ -1,93 +1,7 @@
 from random import randrange
 import time
-import pygame, sys, subprocess
+import pygame, sys, os
 from threading import Thread
-
-withBot = True
-size = width, height = 500, 340
-if withBot:
-    size = width, height = 828, 358
-
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('Statki')
-
-w, h=5, 5
-
-myp = []
-for i in range(w*h):
-    myp.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\square.png").convert())
-
-
-def bganimate():
-    bg = []
-    if not withBot:
-        for i in range(25):
-            nr = i
-            if i  < 10:
-                nr = "0"+str(i)
-            bg.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
-    else:
-        for i in range(4):
-            bg.append(pygame.image.load(f"C:\\Users\\galorf\\Desktop\\L_PROJECTS\\projects\\python\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
-    tlorect = bg[0].get_rect()
-    while True:
-        for i in range(len(bg)):
-            for img2 in bg:
-                if bg[i] != img2:
-                    screen.blit(img2, [-1000, -1000])
-            if not withBot:
-                time.sleep(0.1)
-            else:
-                time.sleep(0.2)
-            screen.blit(bg[i], tlorect)
-        for i in range(len(bg)-1, 1, -1):
-            for img2 in bg:
-                if bg[i] != img2:
-                    screen.blit(img2, [-1000, -1000])
-            if not withBot:
-                time.sleep(0.1)
-            else:
-                time.sleep(0.2)
-            screen.blit(bg[i], tlorect)
-t2 = Thread(target = bganimate)
-t2.start()
-
-def insquare(pos):
-    id = -1
-    for x in range(w):
-        for y in range(h):
-            id = id+1
-            min_x, min_y =50*x,50*y
-            max_x, max_y =50*x+50,50*y+50
-            if pos[0] > min_x and pos[0] < max_x and pos[1] > min_y and pos[1] < max_y:
-                return i
-    return False
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Set the x, y postions of the mouse click
-            x, y = event.pos
-            print(insquare(event.pos))
-            # for sq in myp:
-
-            #     print("Sorawdzan img na pozyci " + str(myp.index(sq)) + " collide ?"  + str(sq.get_rect().collidepoint(event.pos)))
-            #     if sq.get_rect().collidepoint(event.pos):
-            #         print("Clicked " + str(myp.index(sq)))
-            #         break
-
-
-    id = -1
-    for x in range(w):
-        for y in range(h):
-            id = id+1
-            screen.blit(myp[i], [50*x,50*y])
-
-    pygame.display.flip()
-    pygame.display.update()
-
-
 
 class ShipsGame:
     def __init__(self, width=5, height=5, ship_cout=5, health=5, with_bot=False, letters="abcdefghijklmnoprstuwyz", debug=False):
@@ -103,7 +17,120 @@ class ShipsGame:
         self.statki = []
         self.znaki_na_wysokosc = []
         self.ilosczniszczonychstatkow = 0
+        self.my_hits = []
+        self.bot_hits = []
+
+
+        self.__path__ = os.path.dirname(__file__)
+
+        self.size = [500, 340]
+        if self.with_bot:
+            self.size = [828, 358]
+        self.screen = pygame.display.set_mode(self.size)
+        pygame.display.set_caption('Statki')
+
+        # self.myp = []
+        # for i in range(self.width*self.height):
+        #     self.myp.append(pygame.image.load(f"{self.__path__}\\square.png"))
+        # self.explosion = pygame.image.load(f"{self.__path__}\\explosion.png")
+        # self.water_splash = pygame.image.load(f"{self.__path__}\\water_splash.png")
+
+        # self.missed = []
+        # for i in range(2):
+        #     self.missed.append(pygame.image.load(f"{self.__path__}\\x.png"))
+        # self.hitted = []
+        # for i in range(3):
+            # self.hitted.append(pygame.image.load(f"{self.__path__}\\hit_ship.png"))
+
         self.Start()
+
+        Thread(target = self.bganimate).start()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if self.insquare(event.pos) != False:
+                        i, x2, y2 = self.insquare(event.pos)
+                        if self.ishereshoot(f"{y+1}x{x}y", self.my_hits) == 2:
+                            show_expolsion = [x2*50, y2*50, 0]
+                            Thread(target = self.expolsioneddect).start()
+
+            # if show_expolsion != False:
+            #     if show_expolsion[2]:
+            #         self.screen.blit(self.explosion, [show_expolsion[0],show_expolsion[1]])
+            #     else:
+            #         self.screen.blit(self.water_splash, [show_expolsion[0],show_expolsion[1]])
+
+            id = -1
+            show_missed = -1
+            show_hitteded = -1
+            for x in range(self.width):
+                for y in range(self.height):
+                    id = id+1
+                    self.screen.blit(self.myp[i], [50*y,50*x])
+                    # is_here = self.ishereshoot(f"{y+1}x{x}y", self.my_hits)
+                    # if is_here != 2:
+                    #     if is_here == 1:
+                    #         show_hitteded += 1
+                    #         self.screen.blit(self.hitted[show_hitteded], [50*y,50*x])
+                    #     else:
+                    #         show_missed += 1
+                    #         self.screen.blit(self.missed[show_missed], [50*y,50*x])
+
+
+            pygame.display.flip()
+            pygame.display.update()
+
+    def bganimate(self):
+        bg = []
+        if not self.with_bot:
+            for i in range(25):
+                nr = i
+                if i  < 10:
+                    nr = "0"+str(i)
+                bg.append(pygame.image.load(f"{__path__}\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
+        else:
+            for i in range(4):
+                bg.append(pygame.image.load(f"{__path__}\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
+        tlorect = bg[0].get_rect()
+        while True:
+            for i in range(len(bg)):
+                for img2 in bg:
+                    if bg[i] != img2:
+                        self.screen.blit(img2, [-1000, -1000])
+                if not self.with_bot:
+                    time.sleep(0.1)
+                else:
+                    time.sleep(0.2)
+                self.screen.blit(bg[i], tlorect)
+            for i in range(len(bg)-1, 1, -1):
+                for img2 in bg:
+                    if bg[i] != img2:
+                        self.screen.blit(img2, [-1000, -1000])
+                if not self.with_bot:
+                    time.sleep(0.1)
+                else:
+                    time.sleep(0.2)
+                self.screen.blit(bg[i], tlorect)
+
+    def insquare(self, pos):
+        id = -1
+        for x in range(self.width):
+            for y in range(self.height):
+                id = id+1
+                min_x, min_y =50*x,50*y
+                max_x, max_y =50*x+50,50*y+50
+                if max_x > pos[1] and pos[1] > min_x and max_y > pos[0] and pos[0] > min_y:
+                    return id, y, x
+        return False
+
+    show_expolsion = False
+    def expolsioneddect():
+        time.sleep(1)
+        global show_expolsion
+        show_expolsion = False
 
     def ciongznakow(self, ciong, dlugosc):
         list2 = [*ciong]
@@ -251,8 +278,6 @@ class ShipsGame:
         ilosczniszczonychstatkow = 0
         stopped = 0
         score = 0
-        my_hits = []
-        bot_hits = []
         mojestatki = []
         global znaki_na_wysokosc
         znaki_na_wysokosc = self.ciongznakow(self.letters, self.height)
@@ -312,7 +337,7 @@ class ShipsGame:
                 num, let = self.sprawdzanie_poprawnosci_pola(podanepole)
                 po = "x"+num+"y"+str(znaki_na_wysokosc.index(let))
 
-                if self.ishereshoot(po, my_hits) != 2:
+                if self.ishereshoot(po, self.my_hits) != 2:
                     print("Był już strzał w to pole")
                     continue
                 if self.is_there_ship(self.statki, po) == 1:
@@ -327,7 +352,7 @@ class ShipsGame:
                         "pos": po,
                         "hit": 1
                     }
-                    my_hits.append(customtable)
+                    self.my_hits.append(customtable)
                 else:
                     if self.with_bot:
                         print("Nie trafiono w statek")
@@ -339,15 +364,15 @@ class ShipsGame:
                         "pos": po,
                         "hit": 0
                     }
-                    my_hits.append(customtable)
-                self.create_table(my_hits, bot_hits)
+                    self.my_hits.append(customtable)
+                self.create_table(self.my_hits, self.bot_hits)
 
             if heal==0:
                 # print("koniec życia")
                 break
             if len(self.statki) == 0:
                 # print("koniec statkow bota")
-                self.create_table(my_hits, bot_hits)
+                self.create_table(self.my_hits, self.bot_hits)
                 break
 
             if self.with_bot:
@@ -363,10 +388,10 @@ class ShipsGame:
 
                     bot_shoot = "x" + str(bot_shoot_x) + "y"+str(bot_shoot_y)
                     customtable = {}
-                    if self.ishereshoot(bot_shoot, bot_hits) != 2:
+                    if self.ishereshoot(bot_shoot, self.bot_hits) != 2:
                         if self.debug:
                             print("Bot strzelić pole " + bot_shoot + " ale już tu strzelał ")
-                            print(bot_hits)
+                            print(self.bot_hits)
                         continue
                     if self.is_there_ship(mojestatki, bot_shoot) == 1:
                         mojestatki.remove(bot_shoot)
@@ -375,7 +400,7 @@ class ShipsGame:
                             "hit": 1
                         }
                         trafione = "trafił"
-                        bot_hits.append(customtable)
+                        self.bot_hits.append(customtable)
                         break
                     else:
                         customtable = {
@@ -383,10 +408,10 @@ class ShipsGame:
                             "hit": 0
                         }
                         trafione = "nie trafił"
-                        bot_hits.append(customtable)
+                        self.bot_hits.append(customtable)
                         break
                 print("Komputer strzelił pole " + str(bot_shoot_x) + znaki_na_wysokosc[bot_shoot_y] + " i " +trafione)
-                self.create_table(my_hits, bot_hits)
+                self.create_table(self.my_hits, self.bot_hits)
             
             if len(mojestatki) == 0 and self.with_bot:
                 # print("nie mam statkow")
@@ -401,7 +426,7 @@ class ShipsGame:
             elif len(self.statki) == 0:
                 print("WIN Score: " + str(score))
 
-# ShipsGame(with_bot=True, ship_cout=10, width=10, height=10)
+ShipsGame(with_bot=True, ship_cout=10, width=10, height=10)
 # f = ["dwa", "trzy"]
 # f.insert(0, "jeden")
 # f.insert(-0, "cztery")
