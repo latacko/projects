@@ -1,6 +1,8 @@
+import pygame
 from random import randrange
-import time
-import pygame, sys, os
+from time import sleep as t_sleep
+from sys import exit as sys_exit
+from os import path as os_path
 from threading import Thread
 
 class ShipsGame:
@@ -13,6 +15,7 @@ class ShipsGame:
         self.height = height
         self.with_bot = with_bot
         self.debug = debug
+        self.show_expolsion = False
         # values
         self.statki = []
         self.znaki_na_wysokosc = []
@@ -21,7 +24,8 @@ class ShipsGame:
         self.bot_hits = []
 
 
-        self.__path__ = os.path.dirname(__file__)
+        self.__path__ = os_path.dirname(__file__)
+        print(self.__path__)
 
         self.size = [500, 340]
         if self.with_bot:
@@ -29,55 +33,59 @@ class ShipsGame:
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption('Statki')
 
-        # self.myp = []
-        # for i in range(self.width*self.height):
-        #     self.myp.append(pygame.image.load(f"{self.__path__}\\square.png"))
-        # self.explosion = pygame.image.load(f"{self.__path__}\\explosion.png")
-        # self.water_splash = pygame.image.load(f"{self.__path__}\\water_splash.png")
+        self.myp = []
+        for i in range(self.width*self.height+1):
+            self.myp.append(pygame.image.load(f"{self.__path__}\\square.png"))
+        self.explosion = pygame.image.load(f"{self.__path__}\\explosion.png")
+        self.water_splash = pygame.image.load(f"{self.__path__}\\water_splash.png")
 
-        # self.missed = []
-        # for i in range(2):
-        #     self.missed.append(pygame.image.load(f"{self.__path__}\\x.png"))
-        # self.hitted = []
-        # for i in range(3):
-            # self.hitted.append(pygame.image.load(f"{self.__path__}\\hit_ship.png"))
+        self.missed = []
+        for i in range(2):
+            self.missed.append(pygame.image.load(f"{self.__path__}\\x.png"))
+        self.hitted = []
+        for i in range(3):
+            self.hitted.append(pygame.image.load(f"{self.__path__}\\hit_ship.png"))
 
-        self.Start()
-
+        # Thread(target = self.ShowGameWindows).start()
         Thread(target = self.bganimate).start()
-
+        Thread(target = self.Start).start()
+        self.ShowGameWindows()
+        # self.ShowGameWindows()
+    
+    def ShowGameWindows(self):
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT: sys.exit()
+                if event.type == pygame.QUIT: sys_exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if self.insquare(event.pos) != False:
                         i, x2, y2 = self.insquare(event.pos)
                         if self.ishereshoot(f"{y+1}x{x}y", self.my_hits) == 2:
-                            show_expolsion = [x2*50, y2*50, 0]
+                            self.show_expolsion = [x2*50, y2*50, 0]
                             Thread(target = self.expolsioneddect).start()
 
-            # if show_expolsion != False:
-            #     if show_expolsion[2]:
-            #         self.screen.blit(self.explosion, [show_expolsion[0],show_expolsion[1]])
-            #     else:
-            #         self.screen.blit(self.water_splash, [show_expolsion[0],show_expolsion[1]])
+            if self.show_expolsion != False:
+                if self.show_expolsion[2]:
+                    self.screen.blit(self.explosion, [self.show_expolsion[0],self.show_expolsion[1]])
+                else:
+                    self.screen.blit(self.water_splash, [self.show_expolsion[0],self.show_expolsion[1]])
 
-            id = -1
+            id_obrazka = -1
             show_missed = -1
             show_hitteded = -1
             for x in range(self.width):
                 for y in range(self.height):
-                    id = id+1
-                    self.screen.blit(self.myp[i], [50*y,50*x])
-                    # is_here = self.ishereshoot(f"{y+1}x{x}y", self.my_hits)
-                    # if is_here != 2:
-                    #     if is_here == 1:
-                    #         show_hitteded += 1
-                    #         self.screen.blit(self.hitted[show_hitteded], [50*y,50*x])
-                    #     else:
-                    #         show_missed += 1
-                    #         self.screen.blit(self.missed[show_missed], [50*y,50*x])
+                    id_obrazka = id_obrazka+1
+                    self.screen.blit(self.myp[id_obrazka], [50*y,50*x])
+                    is_here = self.ishereshoot(f"{y+1}x{x}y", self.my_hits)
+                    if is_here != 2:
+                        print(f"Na polu {y+1}x{x}y jest trafione {is_here}")
+                        if is_here == 1:
+                            show_hitteded += 1
+                            self.screen.blit(self.hitted[show_hitteded], [50*y,50*x])
+                        else:
+                            show_missed += 1
+                            self.screen.blit(self.missed[show_missed], [50*y,50*x])
 
 
             pygame.display.flip()
@@ -90,10 +98,10 @@ class ShipsGame:
                 nr = i
                 if i  < 10:
                     nr = "0"+str(i)
-                bg.append(pygame.image.load(f"{__path__}\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
+                bg.append(pygame.image.load(f"{self.__path__}\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
         else:
             for i in range(4):
-                bg.append(pygame.image.load(f"{__path__}\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
+                bg.append(pygame.image.load(f"{self.__path__}\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
         tlorect = bg[0].get_rect()
         while True:
             for i in range(len(bg)):
@@ -101,18 +109,18 @@ class ShipsGame:
                     if bg[i] != img2:
                         self.screen.blit(img2, [-1000, -1000])
                 if not self.with_bot:
-                    time.sleep(0.1)
+                    t_sleep(0.1)
                 else:
-                    time.sleep(0.2)
+                    t_sleep(0.2)
                 self.screen.blit(bg[i], tlorect)
             for i in range(len(bg)-1, 1, -1):
                 for img2 in bg:
                     if bg[i] != img2:
                         self.screen.blit(img2, [-1000, -1000])
                 if not self.with_bot:
-                    time.sleep(0.1)
+                    t_sleep(0.1)
                 else:
-                    time.sleep(0.2)
+                    t_sleep(0.2)
                 self.screen.blit(bg[i], tlorect)
 
     def insquare(self, pos):
@@ -126,11 +134,9 @@ class ShipsGame:
                     return id, y, x
         return False
 
-    show_expolsion = False
-    def expolsioneddect():
-        time.sleep(1)
-        global show_expolsion
-        show_expolsion = False
+    def expolsioneddect(self):
+        t_sleep(1)
+        self.show_expolsion = False
 
     def ciongznakow(self, ciong, dlugosc):
         list2 = [*ciong]
@@ -284,10 +290,10 @@ class ShipsGame:
         while len(znaki_na_wysokosc) == 0:
             for i in range(1, 4):
                 print("Loading" + "."*i)
-                time.sleep(2)
+                t_sleep(2)
             for i in range(2, 1, -1):
                 print("Loading" + "."*i)
-                time.sleep(2)
+                t_sleep(2)
 
         if self.debug:
             print("ustawiono " + str(znaki_na_wysokosc))
@@ -378,7 +384,7 @@ class ShipsGame:
             if self.with_bot:
                 # ustawienia komputera
                 print("Tura komputera")
-                time.sleep(2)
+                t_sleep(2)
                 bot_shoot_x = 0
                 bot_shoot_y = 0
                 trafione = None
@@ -426,7 +432,7 @@ class ShipsGame:
             elif len(self.statki) == 0:
                 print("WIN Score: " + str(score))
 
-ShipsGame(with_bot=True, ship_cout=10, width=10, height=10)
+ShipsGame(with_bot=True, ship_cout=2, width=5, height=5)
 # f = ["dwa", "trzy"]
 # f.insert(0, "jeden")
 # f.insert(-0, "cztery")
