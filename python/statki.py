@@ -5,6 +5,9 @@ from sys import exit as sys_exit
 from os import path as os_path
 from threading import Thread
 
+# =========== POBIERANIE PYGAME ================
+# python -m pip install -U pygame --user
+
 class ShipsGame:
     def __init__(self, width=5, height=5, ship_cout=5, health=5, with_bot=False, graphic = True, letters="abcdefghijklmnoprstuwyz", debug=False):
         # game settings
@@ -89,7 +92,7 @@ class ShipsGame:
                             self.show_expolsion = [x2*50+20, y2*50+20, 0]
                             Thread(target = self.expolsioneddect).start()
                             print(f"Strzelam na pole x{x2+1}y{y2} statki bota: {self.statki}")
-                            trafione = self.Shoot(f"x{x2+1}y{y2}", self.statki, True, self.ilosczyc)
+                            trafione = self.Shoot(f"x{x2+1}y{y2}", self.statki, True)
                         self.setingship = False
                     elif self.createshipuser and self.insquare(event.pos, "right") != False and len(self.mojestatki)<self.iloscstatkow:
                         i, x2, y2 = self.insquare(event.pos, "right")
@@ -145,7 +148,7 @@ class ShipsGame:
 
             if self.gameStarted :
                 if self.ilosczyc == 0:
-                    self.screenf.blit(self.loose_text, [0,0])
+                    self.screen.blit(self.loose_text, [0,0])
                 else:
                     if len(self.mojestatki) == 0 and self.with_bot:
                         self.screen.blit(self.loose_text, [0,0])
@@ -424,7 +427,7 @@ class ShipsGame:
                     if self.ishereshoot(po, self.my_hits) != 2:
                         print("Był już strzał w to pole")
                         continue
-                    trafione = self.Shoot(po, self.statki, True, self.ilosczyc)
+                    trafione = self.Shoot(po, self.statki, True)
                     # if trafione == "trafione" and self.with_bot:
                         # print("Trafiono w statek")
                     # if self.is_there_ship(self.statki, po) == 1:
@@ -483,7 +486,7 @@ class ShipsGame:
                             print("Bot strzelić pole " + bot_shoot + " ale już tu strzelał ")
                             print(self.bot_hits)
                         continue
-                    trafione = self.Shoot(bot_shoot, self.mojestatki, False, self.ilosczyc)
+                    trafione = self.Shoot(bot_shoot, self.mojestatki, False)
                     break
                     # if self.is_there_ship(self.mojestatki, bot_shoot) == 1:
                     #     self.mojestatki.remove(bot_shoot)
@@ -518,7 +521,7 @@ class ShipsGame:
             elif len(self.statki) == 0:
                 print("WIN Score: " + str(self.score))
 
-    def Shoot(self, pole, table, Player, heal):
+    def Shoot(self, pole, table, Player):
         trafione = ""
         if self.is_there_ship(table, pole) == 1:
             table.remove(pole)
@@ -532,7 +535,7 @@ class ShipsGame:
                 if self.with_bot:
                     print("Trafiono w statek")
                 else:
-                    heal += 1
+                    self.ilosczyc += 1
                     print("Trafiono w statek (+1 punkt życia)")
                 self.my_hits.append(customtable)
             else:
@@ -547,15 +550,11 @@ class ShipsGame:
                 if self.with_bot:
                     print("Nie trafiono w statek")
                 else:
-                    heal -= 1
+                    self.ilosczyc -= 1
                     print("Nie trafiono w statek (-1 punkt życia)")
                 self.my_hits.append(customtable)
             else:
                 self.bot_hits.append(customtable)
         return trafione
 
-ShipsGame(with_bot=True, ship_cout=2, width=5, height=5)
-# f = ["dwa", "trzy"]
-# f.insert(0, "jeden")
-# f.insert(-0, "cztery")
-# print(f)
+ShipsGame(with_bot=False, ship_cout=5, width=5, height=5)
