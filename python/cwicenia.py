@@ -1,3 +1,4 @@
+import time
 # def setka():
 #     num = int(input("Podaj liczbe: "))
 #     if num < 0:
@@ -11,12 +12,12 @@
 
 # setka()
 
+# ======================================== 28.11.2022 =====================================================
 
-
-def czy_przestepny(rok):
-    if (rok%4 == 0) & (rok%100!=0) | (rok%400==0):
-        return True
-    return False
+# def czy_przestepny(rok):
+#     if (rok%4 == 0) & (rok%100!=0) | (rok%400==0):
+#         return True
+#     return False
 
 # dane_testowe = [1900, 2000, 2016, 1987]
 # wyniki_testow = [False, True, True, False]
@@ -30,11 +31,11 @@ def czy_przestepny(rok):
 # 		print("Nie powiodło się")
 
 
-def dni_w_miesiacu(rok, miesiac):
-    dni = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    if miesiac ==2 and czy_przestepny(rok):
-        return 29
-    return dni[miesiac-1]
+# def dni_w_miesiacu(rok, miesiac):
+#     dni = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+#     if miesiac ==2 and czy_przestepny(rok):
+#         return 29
+#     return dni[miesiac-1]
 
 
 # testuj_lata = [1900, 2000, 2016, 1987]
@@ -51,14 +52,119 @@ def dni_w_miesiacu(rok, miesiac):
 # 		print("Nie powiodło się")
 
 
-def dzien_w_roku(rok, miesiac, dzien):
-    iloscdni = 0
-    for mie in range(miesiac):
-        dni = dni_w_miesiacu(rok, mie)
-        if dni > dzien:
-            return iloscdni+dzien
-        iloscdni += dni
-    return iloscdni
+# def dzien_w_roku(rok, miesiac, dzien):
+#     iloscdni = 0
+#     for mie in range(miesiac):
+#         dni = dni_w_miesiacu(rok, mie)
+#         if dni > dzien:
+#             return iloscdni+dzien
+#         iloscdni += dni
+#     return iloscdni
 
 
-print(dzien_w_roku(2000, 12, 31))
+# print(dzien_w_roku(2000, 12, 31))
+# ========================================03.12.2022 =====================================================
+# def l100kmtompg(litry):
+#     galony = litry/3.785411784
+#     stokmNaMile = 100*1000/1609.344
+#     return stokmNaMile/galony
+
+# def mpgtol100km(mile):
+#     km = mile*1.609344
+#     l =3.785411784
+#     return 100*l/km
+
+# print(l100kmtompg(3.9))
+# print(l100kmtompg(7.5))
+# print(l100kmtompg(10.))
+# print(mpgtol100km(60.3))
+# print(mpgtol100km(31.4))
+# print(mpgtol100km(23.5))
+
+# def czy_trojkot(bok_1, bok_2, bok_3):
+#     for ar in [bok_1, bok_2, bok_3]:
+#         if not isinstance(ar,int) and not isinstance(ar,int) and not ar.isnumeric():
+#             return
+#     boks = [int(bok_1), int(bok_2), int(bok_3)]
+#     boks.sort()
+#     return boks[2] < boks[1]+ boks[0]
+
+# def czy_prostokonty(bok_1, bok_2, bok_3):
+#     if czy_trojkot(bok_1, bok_2, bok_3) != True:
+#         return czy_trojkot(bok_1, bok_2, bok_3)
+
+#     boks = [int(bok_1), int(bok_2), int(bok_3)]
+#     boks.sort()
+#     return boks[0]**2+boks[1]**2==boks[2]**2
+
+# def pole(a,b,c):
+#     if czy_trojkot(a,b,c) != True:
+#         return czy_trojkot(a,b,c)
+#     a,b,c = int(a), int(b), int(c)
+#     s = (a+b+c)/2
+#     return (s*(s- a)*(s-b)*(s-c))**.5
+
+# while True:
+#     bo = []
+#     for i in range(3):
+#         bo.append(input(f"Podaj bok {i+1}: "))
+#     print(czy_prostokonty(bo[0], bo[1], bo[2]))
+#     print(f"Pole {pole(bo[0], bo[1], bo[2])}")
+
+
+# def silnia(ile):
+#     licz= 1
+#     for i in range(1,ile+1):
+#         licz *=i
+#     return licz
+
+# print(silnia(0))
+
+# def fib(ile):
+#     lis = [1, 1]
+
+#     if ile <= 0:
+#         ile = 1
+
+#     if ile <= len(lis):
+#         return lis[ile]
+
+#     for i in range(ile-2):
+#         dlul = len(lis)
+#         lis.append(lis[dlul-2]+lis[dlul-1])
+#     # print(lis)
+#     return lis[ile-1]
+
+# def fib(ile):
+#     if ile <= 0:
+#         return 1
+
+#     if ile < 3:
+#         return 1
+
+#     return fib(ile-2)+fib(ile-1)
+lis = [0.0009999275207519531,
+0.0019998550415039062,
+0.0009856224060058594,
+0.0]
+
+def sil(ile, last=1, i=1):
+    if ile <= 0:
+        return last
+
+    ile -=1
+    last*=i
+    i+=1
+    return sil(ile, last, i)
+
+# def sil(ile, last=1, i=1):
+#     if ile <= 0:
+#         return last
+
+#     ile -=1
+#     last*=i
+#     i+=1
+#     return sil(ile, last, i)
+start_time = time.time()
+print(sil(100))
+print("--- %s seconds ---" % (time.time() - start_time))
