@@ -557,4 +557,4 @@ class ShipsGame:
                 self.bot_hits.append(customtable)
         return trafione
 
-ShipsGame(with_bot=False, ship_cout=5, width=5, height=5)
+ShipsGame(with_bot=True, ship_cout=20, width=5, height=5)
