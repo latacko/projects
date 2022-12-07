@@ -2,8 +2,8 @@ from random import random, randrange
 
 
 debug = True
-tete = 3
-ile_do_zwy = 3
+tete = 5
+ile_do_zwy = 4
 if debug:
     plansza = [[ " " for i in range(tete)] for j in range(tete)]
 else: 
@@ -56,7 +56,7 @@ def make_list_of_free_fields(board):
 
 # make_list_of_free_fields(plansza)
 
-def victory_for(board, sign):
+def victory_for(board, sign, debug=False):
     seks = [
         (1, 0),
         (1, 1),
@@ -71,9 +71,10 @@ def victory_for(board, sign):
     mozliwosci_wygranej = []
     for k in range(tete):
         for v in range(tete):
-            if not (k, v) in li:
+            if not (k, v) in li and board[k][v] == sign:
                 for sek in seks:
-                    # print(f"===================SEKWENCJA {sek} =======================")
+                    if debug:
+                        print(f"===================SEKWENCJA {sek} =======================")
                     for x in range(0, ile_do_zwy):
                         to_test_k = k + sek[0]*x
                         to_test_v = v + sek[1]*x
@@ -81,7 +82,10 @@ def victory_for(board, sign):
                             break
                         # print(f"Sprawdzam {x} pole {to_test_k} {to_test_v} czy ma znak {sign} wynik {board[to_test_k][to_test_v] != sign}")
                         if board[to_test_k][to_test_v] != sign:
-                            mozliwosci_wygranej.append({"piority":x, "po": {k,v}})
+                            if board[to_test_k][to_test_v] == " ":
+                                if debug:
+                                    print(f"> Komputer: pole {(to_test_k,to_test_v)} ma znak |{board[to_test_k][to_test_v]}| i piorytet {x}")
+                                mozliwosci_wygranej.append({"piority":x, "po": (to_test_k,to_test_v)})
                             break
                     else:
                         return True, None
@@ -94,16 +98,37 @@ def victory_for(board, sign):
 def takeSecond(elem):
     return elem["piority"]
 def draw_move(board):
-    wygrana, mozliwosci = victory_for(board, "X")
-    mozliwosci.sort(key=takeSecond, reverse=True)
-    if len(mozliwosci) == 0:
+    print("> Komputer: zaczynam sprawdzać pola i pioritety ich")
+    print("> Komputer: Sprawdzam piorytet gracza: =============================== GRACZ ==================")
+    wygrana2, mozliwosci_gracza = victory_for(board, "O", debug=True)
+    print("> Komputer: Sprawdzam piorytety moje: =============================== MOJE ==================")
+    wygrana, mozliwosci_moje = victory_for(board, "X", debug=True)
+    print("> Komputer: Zaczynam sortować piorytety: ")
+    mozliwosci_gracza.sort(key=takeSecond, reverse=True)
+    mozliwosci_moje.sort(key=takeSecond, reverse=True)
+    print(f"Możliwości gracza: {mozliwosci_gracza}")
+    print(f"Możliwości moje: {mozliwosci_moje}")
+    if len(mozliwosci_moje) == 0 or (len(mozliwosci_gracza) == 0 and len(mozliwosci_moje) == 0):
         le = make_list_of_free_fields(board)
         po = le[randrange(0, len(le)-1)]
         board[po[0]][po[1]] = "X"
+        print("> Komputer: nie ma możliwośc co jest dziwne")
     else:
-        print(mozliwosci)
-        po = mozliwosci[0][1]
-        board[po[0]][po[1]] = "X"
+        print(f"> Komputer: Najlepsze logicznie pole gracza to: { mozliwosci_gracza[0] }")
+        print(f"> Komputer: Najlepsze logicznie pole moje to: { mozliwosci_moje[0] }")
+
+        po_my = mozliwosci_moje[0]["po"]
+        pio_my = mozliwosci_moje[0]["piority"]
+        pio_enemy = -1
+        if (len(mozliwosci_gracza) != 0):
+            po_enemy = mozliwosci_gracza[0]["po"]
+            pio_enemy = mozliwosci_gracza[0]["piority"]
+        if pio_enemy > pio_my:
+            print(f"> Komputer: stawiam na pole {po_enemy} aby zablokować przeciwnikowi możliwości")
+            board[po_enemy[0]][po_enemy[1]] = "X"
+        else:
+            print(f"> Komputer: stawiam na pole {po_my} aby mieć więcej punktów")
+            board[po_my[0]][po_my[1]] = "X"
 
 #
 # Funkcja, która wykonuje ruch za komputer i aktualizuje tablicę.

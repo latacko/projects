@@ -12,12 +12,24 @@
 # while True:
 #     print(validate(input("Podaj ciąg znaków: ")))
 
-def sex(name):
-    # print("|" + name.replace(" ", "")[-1].lower() + "|")
-    if name.strip()[-1].lower() == "a":
-        return "women"
-    else:
-        return "man"
+# def sex(name):
+#     # print("|" + name.replace(" ", "")[-1].lower() + "|")
+#     if name.strip()[-1].lower() == "a":
+#         return "women"
+#     else:
+#         return "man"
 
-while True:
-    print(sex(input("Podaj imie: ")))
+# while True:
+#     print(sex(input("Podaj imie: ")))
+
+
+def silnia(ile):
+    i = 0
+    ilo = 1
+    while i<ile:
+        i += 1
+        ilo *= i
+        print(f"Liczba {ilo} mnożnik: {i}")
+    return ilo
+
+print(silnia(5))
