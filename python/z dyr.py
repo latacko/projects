@@ -23,13 +23,34 @@
 #     print(sex(input("Podaj imie: ")))
 
 
-def silnia(ile):
-    i = 0
-    ilo = 1
-    while i<ile:
-        i += 1
-        ilo *= i
-        print(f"Liczba {ilo} mnożnik: {i}")
-    return ilo
+# def silnia(ile):
+#     i = 0
+#     ilo = 1
+#     while i<ile:
+#         i += 1
+#         ilo *= i
+#         print(f"Liczba {ilo} mnożnik: {i}")
+#     return ilo
 
-print(silnia(5))
+# def walidacja(liczba):
+#     if liczba.lower() == "koniec":
+#         return "koniec"
+#     while not isinstance(liczba, int) and not liczba.isdigit():
+#         liczba = input("Podaj liczbę: ")
+#     return int(liczba)
+
+# while True:
+#     liczba = walidacja(input("Podaj liczbę: "))
+#     if liczba == "koniec":
+#         break
+#     print(silnia(liczba))
+
+def podziel(liczba):
+    n = 3
+    liczba = str(liczba)
+    li = [liczba[len(liczba)-i-n:len(liczba)-i] for i in range(0, len(liczba), n)]
+    li.reverse()
+    tete = join("_")
+    return tete
+
+print(podziel(1236542346545645645645))
