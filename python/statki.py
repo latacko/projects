@@ -9,6 +9,11 @@ from threading import Thread
 
 class GameSettings:
     def __init__(self, width=5, height=5, ship_cout=5, health=5, with_bot=False, graphic = False, letters="abcdefghijklmnoprstuwyz", debug=False):
+        try:
+            import pygame
+        except ModuleNotFoundError as err:
+            print("Nie można zagrać w statki z grafiką. Aby włączyć grafikę zainstaluj pygame")
+            graphic = False
         # game settings
         self.gameStarted = False
         self.letters = letters
@@ -35,7 +40,6 @@ class GameSettings:
         # print(self.__path__)
 
         if self.graphic:
-            import pygame
             self.size = [500, 340]
             if self.with_bot:
                 self.size = [828, 358]
