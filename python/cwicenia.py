@@ -185,3 +185,40 @@ import time
 #     return li
 # print(spt("Ania ma kota"))
 
+def wyswietlac_seg(num):
+    print("""
+     -------
+    |       |
+    |       |
+    |       |
+     -------
+    |       |
+    |       |
+    |       |
+     -------
+    """)
+
+    segments = [
+        " -------",
+        ["|", "|", "|"],
+        ["       |","       |","       |"],
+        " -------",
+        ["|", "|", "|"],
+        ["       |","       |","       |"],
+        " -------",
+    ]
+
+    toturnonsegments = []
+
+    if num == 1:
+        toturnonsegments = [0, 2, 5]
+
+    for seg in toturnonsegments:
+        print(type(segments[seg]))
+        if type(segments[seg]) == "<class 'list'>":
+            for se in segments[seg]:
+                print(se)
+        else:
+            print(segments[seg])
+
+wyswietlac_seg(1)
