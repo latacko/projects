@@ -143,19 +143,10 @@ import time
 #         return 1
 
 #     return fib(ile-2)+fib(ile-1)
-lis = [0.0009999275207519531,
-0.0019998550415039062,
-0.0009856224060058594,
-0.0]
-
-def sil(ile, last=1, i=1):
-    if ile <= 0:
-        return last
-
-    ile -=1
-    last*=i
-    i+=1
-    return sil(ile, last, i)
+# lis = [0.0009999275207519531,
+# 0.0019998550415039062,
+# 0.0009856224060058594,
+# 0.0]
 
 # def sil(ile, last=1, i=1):
 #     if ile <= 0:
@@ -165,6 +156,32 @@ def sil(ile, last=1, i=1):
 #     last*=i
 #     i+=1
 #     return sil(ile, last, i)
-start_time = time.time()
-print(sil(100))
-print("--- %s seconds ---" % (time.time() - start_time))
+
+# def sil(ile, last=1, i=1):
+#     if ile <= 0:
+#         return last
+
+#     ile -=1
+#     last*=i
+#     i+=1
+#     return sil(ile, last, i)
+# start_time = time.time()
+# print(sil(100))
+# print("--- %s seconds ---" % (time.time() - start_time))
+
+# def spt(str):
+#     li = []
+#     last = 0
+#     sep = " "
+#     if str[0].lower() == sep:
+#         last = 1
+#     for i in range(last, len(str)):
+#         cha = str[i]
+#         if cha.lower() == sep:
+#             li.append(str[last:i])
+#             last = i+1
+#         elif i == len(str)-1:
+#             li.append(str[last:i+1])
+#     return li
+# print(spt("Ania ma kota"))
+

@@ -1,10 +1,11 @@
 from random import random, randrange
 # import statki
 class GameSettings:
-    def __init__(self, width, sign_to_win, debug = False):
-        self.debug = True
-        self.width = 5
-        self.ile_do_zwy = 4
+    def __init__(self, width, sign_to_win, debug = False, debug_numbers=False):
+        self.debug = debug
+        self.debug_numbers = debug_numbers
+        self.width = width
+        self.ile_do_zwy = sign_to_win
         self.public_seq = [
             (1, 0),
             (1, 1),
@@ -15,10 +16,7 @@ class GameSettings:
             (0, -1),
             (1, -1),
         ]
-        if debug:
-            self.plansza = [[ " " for i in range(self.width)] for j in range(self.width)]
-        else: 
-            self.plansza = [[ " " for i in range(self.width)] for j in range(self.width)]
+        self.plansza = [[ " " for i in range(self.width)] for j in range(self.width)]
 
         if self.width < 2:
             print("Plansza nie może być mniejsza niż 2 znaki")
@@ -27,13 +25,31 @@ class GameSettings:
     def display_board(self, board):
         iloscsrodkowychpol = self.width-1
         print("-----" + "----"*iloscsrodkowychpol)
+        id = 0
         for x in board:
             for i in range(len(x)):
-                y = x[i]
-                if i == 0:
-                    print(f"| {y} |", end="")
+                id += 1
+                if self.debug_numbers:
+                    if x[i] == " ":
+                        y = id
+                    else:
+                        y = x[i]
                 else:
-                    print(f" {y} |", end="")
+                    y = x[i]
+                if i == 0:
+                    if len(str(y)) == 3:
+                        print(f"|{y}|", end="")
+                    elif len(str(y)) == 2:
+                        print(f"|{y} |", end="")
+                    else:
+                        print(f"| {y} |", end="")
+                else:
+                    if len(str(y)) == 3:
+                        print(f"{y}|", end="")
+                    elif len(str(y)) == 2:
+                        print(f"{y} |", end="")
+                    else:
+                        print(f" {y} |", end="")
             print()
             print("-----" + "----"*iloscsrodkowychpol)
     
@@ -71,7 +87,7 @@ class GameSettings:
         pod_x = pole[0]
         pod_y = pole[1]
         if ile_potrzeba == None:
-            ile_potrzeba == self.ile_do_zwy
+            ile_potrzeba = self.ile_do_zwy
         ile_zostalo = ile_potrzeba
         gdzie_postawic = None
         start_index = 0
@@ -183,8 +199,12 @@ class GameSettings:
             if len(mozliwosci_gracza) == 0:
                 print("> Komputer: nie ma możliwośc co jest dziwne")
                 le = self.make_list_of_free_fields(board)
-                po = le[randrange(0, len(le)-1)]
-                board[po[0]][po[1]] = "X"
+                if len(le) == 0:
+                    po = le[0]
+                    board[po[0]][po[1]] = "X"
+                else:
+                    po = le[randrange(0, len(le)-1)]
+                    board[po[0]][po[1]] = "X"
                 # wygrana3, mozliwosci_puste = victory_for(board, " ", debug=True)
                 # mozliwosci_puste.sort(key=takeSecond)
                 # board[mozliwosci_puste[0][0]][mozliwosci_puste[0][1]] = "X"
@@ -236,5 +256,5 @@ class GameSettings:
             print("wygrał bot")
 
 if __name__ == "__main__":
-    ttt = GameSettings(width=5, sign_to_win=5, debug=False)
+    ttt = GameSettings(width=5, sign_to_win=5, debug=True, debug_numbers=True)
     ttt.Start()
