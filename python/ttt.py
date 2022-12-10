@@ -134,8 +134,8 @@ class GameSettings:
                 to_seq = (seq[0]*-1, seq[1]*-1)
                 if debug:
                     print(f"  > Przeciwnik ma znak na polu {(x,y)}, więc szukam w drugą stronę")
-                new_seq_id = public_seq.index(to_seq)
-                success_2, ile_zostalo_2, gdzie_postawic_2, wyg = test_seq(board, new_seq_id, znak, pole, True, ile_potrzeba=i-1, debug=debug)
+                new_seq_id = self.public_seq.index(to_seq)
+                success_2, ile_zostalo_2, gdzie_postawic_2, wyg = self.test_seq(board, new_seq_id, znak, pole, True, ile_potrzeba=i-1, debug=debug)
                 return success_2, ile_zostalo_2+1, gdzie_postawic, wyg
         return False, ile_zostalo, gdzie_postawic, False
     
