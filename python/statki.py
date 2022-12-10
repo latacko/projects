@@ -1,4 +1,3 @@
-import pygame
 from random import randrange
 from time import sleep as t_sleep
 from sys import exit as sys_exit
@@ -8,8 +7,8 @@ from threading import Thread
 # =========== POBIERANIE PYGAME ================
 # python -m pip install -U pygame --user
 
-class ShipsGame:
-    def __init__(self, width=5, height=5, ship_cout=5, health=5, with_bot=False, graphic = True, letters="abcdefghijklmnoprstuwyz", debug=False):
+class GameSettings:
+    def __init__(self, width=5, height=5, ship_cout=5, health=5, with_bot=False, graphic = False, letters="abcdefghijklmnoprstuwyz", debug=False):
         # game settings
         self.gameStarted = False
         self.letters = letters
@@ -32,12 +31,11 @@ class ShipsGame:
         self.createshipuser = False
         self.mojestatki = []
 
-
-
         self.__path__ = os_path.dirname(__file__)
-        print(self.__path__)
+        # print(self.__path__)
 
         if self.graphic:
+            import pygame
             self.size = [500, 340]
             if self.with_bot:
                 self.size = [828, 358]
@@ -46,34 +44,36 @@ class ShipsGame:
         
             self.myp = []
             for i in range(self.width*self.height+1):
-                self.myp.append(pygame.image.load(f"{self.__path__}\\square.png"))
+                self.myp.append(pygame.image.load(f"statki_images\\{self.__path__}\\square.png"))
             self.byp = []
             if self.with_bot:
                 for i in range(self.width*self.height+1):
-                    self.byp.append(pygame.image.load(f"{self.__path__}\\square.png"))
-            self.explosion = pygame.image.load(f"{self.__path__}\\explosion.png")
-            self.water_splash = pygame.image.load(f"{self.__path__}\\water_splash.png")
+                    self.byp.append(pygame.image.load(f"statki_images\\{self.__path__}\\square.png"))
+            self.explosion = pygame.image.load(f"statki_images\\{self.__path__}\\explosion.png")
+            self.water_splash = pygame.image.load(f"statki_images\\{self.__path__}\\water_splash.png")
 
             self.missed = []
             for i in range(((self.width*self.height)*2)-(self.iloscstatkow*2)):
-                self.missed.append(pygame.image.load(f"{self.__path__}\\x.png"))
+                self.missed.append(pygame.image.load(f"statki_images\\{self.__path__}\\x.png"))
             self.hitted = []
             for i in range(self.iloscstatkow*2):
-                self.hitted.append(pygame.image.load(f"{self.__path__}\\hit_ship.png"))
+                self.hitted.append(pygame.image.load(f"statki_images\\{self.__path__}\\hit_ship.png"))
 
             self.mojestatki_spray = []
             for i in range(self.iloscstatkow):
-                self.mojestatki_spray.append(pygame.image.load(f"{self.__path__}\\moj_statek.png"))
+                self.mojestatki_spray.append(pygame.image.load(f"statki_images\\{self.__path__}\\moj_statek.png"))
 
-            self.loose_text = pygame.image.load(f"{self.__path__}\\lose.png")
-            self.win_text = pygame.image.load(f"{self.__path__}\\win.jpg")
+            self.loose_text = pygame.image.load(f"statki_images\\{self.__path__}\\lose.png")
+            self.win_text = pygame.image.load(f"statki_images\\{self.__path__}\\win.jpg")
 
         # Thread(target = self.ShowGameWindows).start()
-        Thread(target = self.bganimate).start()
+        # self.ShowGameWindows()
+    
+    def Run(self):
         Thread(target = self.Start).start()
         if self.graphic:
+            Thread(target = self.bganimate).start()
             self.ShowGameWindows()
-        # self.ShowGameWindows()
     
     def ShowGameWindows(self):
         while True:
@@ -164,10 +164,10 @@ class ShipsGame:
                 nr = i
                 if i  < 10:
                     nr = "0"+str(i)
-                bg.append(pygame.image.load(f"{self.__path__}\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
+                bg.append(pygame.image.load(f"statki_images\\{self.__path__}\\bgframes\\without_bot\\frame_{nr}_delay-0.1s.gif"))
         else:
             for i in range(4):
-                bg.append(pygame.image.load(f"{self.__path__}\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
+                bg.append(pygame.image.load(f"statki_images\\{self.__path__}\\bgframes\\with_bot\\frame_{i}_delay-0.2s.gif"))
         tlorect = bg[0].get_rect()
         while True:
             for i in range(len(bg)):
@@ -557,4 +557,7 @@ class ShipsGame:
                 self.bot_hits.append(customtable)
         return trafione
 
-ShipsGame(with_bot=True, ship_cout=20, width=5, height=5)
+
+if __name__ == "__main__":
+    stat = GameSettings(with_bot=True, ship_cout=20, width=5, height=5)
+    stat.Run()
