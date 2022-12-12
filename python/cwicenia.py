@@ -185,40 +185,160 @@ import time
 #     return li
 # print(spt("Ania ma kota"))
 
-def wyswietlac_seg(num):
-    print("""
-     -------
-    |       |
-    |       |
-    |       |
-     -------
-    |       |
-    |       |
-    |       |
-     -------
-    """)
+# def wyswietlac_seg(num):
+#     if (isinstance(num,str) and not num.isdigit()) or not isinstance(num,str):
+#         print("musi być liczbą")
+#         return
+#     segments = [
+#         """
+#  ------- 
+# |       |
+# |       |
+# |       |
+         
+# |       |
+# |       |
+# |       |
+#  ------- 
+#         """,
+#         """
+         
+#         |
+#         |
+#         |
+         
+#         |
+#         |
+#         |
+         
+#         """,
+#         """
+#  ------- 
+#         |
+#         |
+#         |
+#  ------- 
+# |        
+# |        
+# |        
+#  ------- 
+#         """,
+#         """
+#  ------- 
+#         |
+#         |
+#         |
+#  ------- 
+#         |
+#         |
+#         |
+#  ------- 
+#         """,
+#         """
+         
+# |       |
+# |       |
+# |       |
+#  ------- 
+#         |
+#         |
+#         |
+         
+#         """,
+#         """
+#  ------- 
+# |        
+# |        
+# |        
+#  ------- 
+#         |
+#         |
+#         |
+#  ------- 
+#         """,
+#         """
+#  ------- 
+# |        
+# |        
+# |        
+#  ------- 
+# |       |
+# |       |
+# |       |
+#  ------- 
+#         """,
+#         """
+#  ------- 
+#         |
+#         |
+#         |
+         
+#         |
+#         |
+#         |
+         
+#         """,
+#         """
+#  ------- 
+# |       |
+# |       |
+# |       |
+#  ------- 
+# |       |
+# |       |
+# |       |
+#  ------- 
+#         """,
+#         """
+#  ------- 
+# |       |
+# |       |
+# |       |
+#  ------- 
+#         |
+#         |
+#         |
+#  ------- 
+#         """,
+#     ]
 
-    segments = [
-        " -------",
-        ["|", "|", "|"],
-        ["       |","       |","       |"],
-        " -------",
-        ["|", "|", "|"],
-        ["       |","       |","       |"],
-        " -------",
-    ]
+#     numbers = list(num)
 
-    toturnonsegments = []
+#     linijki = []
+#     for i in range(9):
+#         for number in numbers:
+#             number = int(number)
+#             if i<len(linijki):
+#                 linijki[i]+="    "+segments[number][i*10:i*10+10].replace("\n", "")
+#             else:
+#                 linijki.append(segments[number][i*10:i*10+10].replace("\n", ""))
+#     for linij in linijki:
+#         print(linij)
 
-    if num == 1:
-        toturnonsegments = [0, 2, 5]
+# while True:
+#     liczba = input("Podaj liczbę (wpisz stop aby zatrzymać program): ")
+#     if liczba.strip().lower() == "stop":
+#         break
+#     wyswietlac_seg(liczba)
 
-    for seg in toturnonsegments:
-        print(type(segments[seg]))
-        if type(segments[seg]) == "<class 'list'>":
-            for se in segments[seg]:
-                print(se)
-        else:
-            print(segments[seg])
-
-wyswietlac_seg(1)
+def cezar(text):
+       texta = ""
+       ile_prz = int(input("O ile chcesz przesunąć: "))
+       if ile_prz < 1 or ile_prz > 26:
+              print("zły przedział")
+              return text;
+       for let in text:
+              asc = ord(let)
+              duza = asc>= 65 and asc <= 90
+              mala = asc>= 97 and asc <= 122
+              asc +=ile_prz
+              if duza:
+                     if asc > 90:
+                            asc = 65+(asc-90)
+              if mala:
+                     if asc > 122:
+                            asc = 97+(asc-122)
+              texta += chr(asc) 
+       return texta
+while True:
+       print(cezar("abcABCZ"))
