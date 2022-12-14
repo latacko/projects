@@ -1,8 +1,9 @@
 from random import random, randrange
 # import statki
 class GameSettings:
-    def __init__(self, width, sign_to_win, debug = False, debug_numbers=False):
+    def __init__(self, width, sign_to_win, debug = False, debug_numbers=False, bot_start=True):
         self.debug = debug
+        self.bot_start = bot_start
         self.debug_numbers = debug_numbers
         self.width = width
         self.ile_do_zwy = sign_to_win
@@ -237,7 +238,8 @@ class GameSettings:
     
     def Start(self):
         sr = self.width//2
-        self.plansza[sr][sr] = "X"
+        if self.bot_start:
+            self.plansza[sr][sr] = "X"
         self.display_board(self.plansza)
         while True:
             self.enter_move(self.plansza)
@@ -256,5 +258,5 @@ class GameSettings:
             print("wygrał bot")
 
 if __name__ == "__main__":
-    ttt = GameSettings(width=5, sign_to_win=5, debug=True, debug_numbers=True)
+    ttt = GameSettings(width=5, sign_to_win=5, debug=False, debug_numbers=True, bot_start=True)
     ttt.Start()

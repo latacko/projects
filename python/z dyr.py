@@ -23,21 +23,22 @@
 #     print(sex(input("Podaj imie: ")))
 
 
-# def silnia(ile):
-#     i = 0
-#     ilo = 1
-#     while i<ile:
-#         i += 1
-#         ilo *= i
-#         print(f"Liczba {ilo} mnożnik: {i}")
-#     return ilo
+def silnia(ile):
+    i = 0
+    ilo = 1
+    while i<ile:
+        i += 1
+        ilo *= i
+        # print(f"Liczba {ilo} mnożnik: {i}")
+    return ilo
 
-# def walidacja(liczba):
-#     if liczba.lower() == "koniec":
-#         return "koniec"
-#     while not isinstance(liczba, int) and not liczba.isdigit():
-#         liczba = input("Podaj liczbę: ")
-#     return int(liczba)
+def walidacja(liczba):
+    liczba = str(liczba)
+    if liczba.lower() == "koniec":
+        return "koniec"
+    while not isinstance(liczba, int) and not liczba.isdigit():
+        liczba = input("Podaj liczbę: ")
+    return int(liczba)
 
 # while True:
 #     liczba = walidacja(input("Podaj liczbę: "))
@@ -45,12 +46,17 @@
 #         break
 #     print(silnia(liczba))
 
-def podziel(liczba):
+def podziel(liczba, sep="_"):
     n = 3
+    if not isinstance(liczba, int) and not liczba.isdigit():
+        return "wrong format"
     liczba = str(liczba)
     li = [liczba[len(liczba)-i-n:len(liczba)-i] for i in range(0, len(liczba), n)]
     li.reverse()
-    tete = join("_")
+    ilezo = len(liczba)%3
+    if ilezo > 0:
+        li[0] =liczba[0:ilezo]
+    tete = sep.join(li)
     return tete
 
-print(podziel(1236542346545645645645))
+print(podziel(silnia(walidacja(100))))

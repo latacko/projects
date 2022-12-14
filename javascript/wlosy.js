@@ -128,12 +128,17 @@ const wlosy = `
 211-165
 212-68
 213-176
-`
+`;
 
-let array = wlosy.split("\n")
-tekst = ''
-array.forEach(element => {
-    let poloncenie = element.split("-")
-    tekst += 'AddNewVariation("Hair", "Female", '+poloncenie[0]+', '+poloncenie[1]+', true)\n'
+let array = wlosy.split("\n");
+tekst = "";
+array.forEach((element) => {
+  let poloncenie = element.split("-");
+  tekst +=
+    'AddNewVariation("Hair", "Female", ' +
+    poloncenie[0] +
+    ", " +
+    poloncenie[1] +
+    ", true)\n";
 });
-console.log(tekst)
+console.log(tekst);
